@@ -1,0 +1,45 @@
+
+sudo apt -y install mariadb-common mariadb-server mariadb-client
+sudo systemctl start mariadb
+sudo systemctl enable mariadb
+sudo mysql_secure_installation
+
+
+sudo mysql -uroot -p'****' -e "create database zabbix character set utf8 collate utf8_bin;"
+sudo mysql -uroot -p'****' -e "grant all privileges on zabbix.* to zabbix@localhost identified by '****';"
+sudo mysql -uroot -p'****' zabbix -e "set global innodb_strict_mode='OFF';"
+zcat /usr/share/doc/zabbix-sql-scripts/mysql/create.sql.gz | mysql -uzabbix -p zabbix
+
+/etc/zabbix/zabbix_server.conf --> DBPassword=****
+
+systemctl restart zabbix-server zabbix-agent apache2
+systemctl enable zabbix-server zabbix-agent apache2
+
+sudo ufw allow 10050/tcp
+sudo ufw allow 10051/tcp
+sudo ufw allow 80/tcp
+sudo ufw reload
+
+/usr/share/zabbix/conf/zabbix.conf.php
+
+sudo nano /etc/zabbix/apache.conf  -->  php_value date.timezone Europe/Istanbul
+
+web
+Admin -> zabbix
+
+
+/**************** LDAP *************/
+ldap://ldapsunucuip
+389
+dc=aaa,dc=bbb,dc=tr
+sAMAccountName
+xxxx@aaa.bbb.tr
+/**************** LDAP *************/
+
+Kaynaklar
+
+https://www.zabbix.com/download?zabbix=5.4&os_distribution=ubuntu&os_version=20.04_focal&db=mysql&ws=apache
+https://bestmonitoringtools.com/how-to-install-zabbix-server-on-ubuntu/
+https://www.zabbix.com/documentation/current/manual/discovery/network_discovery/rule
+https://bestmonitoringtools.com/vmware-monitoring-with-zabbix-esxi-vcenter-vm-vsphere/
+https://www.serdarbayram.net/zabbix-server-vmware-entegrasyonu.html
